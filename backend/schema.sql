@@ -1,0 +1,1 @@
+CREATE DATABSE bzz-mensa;
