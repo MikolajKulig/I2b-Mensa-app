@@ -4,55 +4,61 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: white;
-  border-radius: 1rem;
+  background-color: #f0f9ff;
   position: relative;
   z-index: 1;
 }
 
 .card {
   width: 100%;
-  max-width: 24rem;
-  background: linear-gradient(to bottom, rgba(224, 245, 255, 0.5), white);
+  max-width: 26rem;
+  background: white;
   border-radius: 1.5rem;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid #bfdbfe;
-  color: black;
+  border: none;
+  color: #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
 }
 
 .icon-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3.5rem;
-  height: 3.5rem;
-  background: white;
+  width: 4rem;
+  height: 4rem;
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8);
   border-radius: 1rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 16px rgba(14, 165, 233, 0.2);
 }
 
 .icon {
-  width: 1.75rem;
-  height: 1.75rem;
-  color: black;
+  width: 2rem;
+  height: 2rem;
+  color: white;
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
   text-align: center;
+  color: #1f2937;
 }
 
 .subtitle {
   color: #6b7280;
-  font-size: 0.875rem;
-  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  margin-bottom: 2rem;
   text-align: center;
 }
 
@@ -60,65 +66,115 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 
 .input-wrapper {
   position: relative;
+  width: 100%;
 }
 
 .input-icon {
   position: absolute;
-  left: 0.75rem;
+  left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #9ca3af;
+  color: #6b7280;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .icon-small {
-  width: 1rem;
-  height: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .input {
-  width: 85%;
-  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
-  border-radius: 1rem;
-  border: 1px solid #e5e7eb;
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border-radius: 0.75rem;
+  border: 1.5px solid #e5e7eb;
   background-color: #f9fafb;
-  color: black;
-  font-size: 0.875rem;
+  color: #1f2937;
+  font-size: 1rem;
   outline: none;
-  transition: box-shadow 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .input:focus {
-  box-shadow: 0 0 0 2px #bfdbfe;
-  border-color: #bfdbfe;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+  border-color: #38bdf8;
 }
 
 .error-text {
   font-size: 0.875rem;
   color: #ef4444;
   text-align: center;
+  margin-top: 0.5rem;
 }
 
 .submit-btn {
   width: 100%;
-  background: linear-gradient(to bottom, #374151, #111827);
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8);
   color: white;
-  font-weight: 500;
-  padding: 0.5rem 0;
-  border-radius: 1rem;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 0;
+  border-radius: 0.75rem;
+  border: none;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
   cursor: pointer;
-  transition: filter 0.2s ease;
+  transition: all 0.3s ease;
+  margin: 1.5rem 0 1rem 0;
 }
 
 .submit-btn:hover {
-  filter: brightness(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(14, 165, 233, 0.4);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.register-link {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+.register-link button {
+  background: none;
+  border: none;
+  color: #0ea5e9;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.register-link button:hover {
+  color: #0284c7;
+  text-decoration: underline;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
