@@ -1,5 +1,6 @@
-C:\BZZ\M426\backend\mensa\src\main\java\com\mensa\controller\GetController.java
-C:\BZZ\M426\backend\mensa\src\main\java\com\mensa\Main.java
-C:\BZZ\M426\backend\mensa\src\main\java\com\mensa\Menu.java
-C:\BZZ\M426\backend\mensa\src\main\java\com\mensa\repository\DBRepsitory.java
-C:\BZZ\M426\backend\mensa\src\main\java\com\mensa\repository\JdbcConfig.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/Main.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/Menu.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/controller/GetController.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/repository/JdbcConfig.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/repository/MenuRepository.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/repository/MenuRowMapper.java
