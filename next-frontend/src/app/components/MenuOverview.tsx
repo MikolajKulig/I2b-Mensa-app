@@ -132,9 +132,7 @@ const MenuOverview: React.FC = () => {
               <div className="meal-content">
                 <h3>{meal.name}</h3>
                 <p>{meal.description}</p>
-                <p>
-                  <strong>Preis:</strong> {meal.price}
-                </p>
+                <p className="meal-price">{meal.price}</p>
                 <button
                   className="add-to-cart-btn"
                   onClick={() => handleAddToCart(meal)}
