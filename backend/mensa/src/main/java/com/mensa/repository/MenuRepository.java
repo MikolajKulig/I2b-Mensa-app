@@ -16,6 +16,7 @@ public class MenuRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    
     public Optional<List<Menu>> getAllMenu() {
         String query = """
             SELECT id, name, description, price, available, allergen
@@ -46,5 +47,4 @@ public class MenuRepository {
             return Optional.empty();
         }
     }
-
 }
