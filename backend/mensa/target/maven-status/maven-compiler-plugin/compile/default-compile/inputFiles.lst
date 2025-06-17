@@ -1,6 +1,14 @@
 /home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/Main.java
 /home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/Menu.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/Service/AuthService.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/Service/SessionService.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/User.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/config/SecurityConfig.java
 /home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/controller/GetController.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/controller/UserController.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/filter/AuthFilter.java
 /home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/repository/JdbcConfig.java
 /home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/repository/MenuRepository.java
 /home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/repository/MenuRowMapper.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/repository/UserRepository.java
+/home/mikolaj-kulig/BZZ/M426/backend/mensa/src/main/java/com/mensa/repository/UserRowMapper.java
