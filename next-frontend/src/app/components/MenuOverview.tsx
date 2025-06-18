@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { ShoppingCart, Check, Image } from "lucide-react";
+import Footer from "./Footer";
 import "./MenuOverview.css";
 
 const allMeals = [
@@ -6,61 +8,61 @@ const allMeals = [
     name: "Spaghetti Bolognese",
     description: "Klassische Pasta mit würziger Fleischsoße",
     price: "4,50€",
-    image: "https://source.unsplash.com/400x300/?spaghetti",
+    image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=300&fit=crop",
   },
   {
     name: "Gemüse-Curry",
     description: "Herzhaftes Curry mit exotischem Aroma",
     price: "4,00€",
-    image: "https://source.unsplash.com/400x300/?curry",
+    image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&h=300&fit=crop",
   },
   {
     name: "Käsespätzle",
     description: "Deftige Spätzle mit geschmolzenem Käse",
     price: "3,80€",
-    image: "https://source.unsplash.com/400x300/?cheese-noodles",
+    image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400&h=300&fit=crop",
   },
   {
     name: "Hähnchenbrust",
     description: "Zartes Hähnchen, leicht gewürzt",
     price: "5,20€",
-    image: "https://source.unsplash.com/400x300/?chicken",
+    image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400&h=300&fit=crop",
   },
   {
     name: "Schnitzel mit Pommes",
     description: "Knuspriges Schnitzel mit goldenen Pommes",
     price: "5,00€",
-    image: "https://source.unsplash.com/400x300/?schnitzel",
+    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop",
   },
   {
     name: "Linsensuppe",
     description: "Hausgemachte Suppe mit kräftigem Geschmack",
     price: "3,50€",
-    image: "https://source.unsplash.com/400x300/?lentilsoup",
+    image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop",
   },
   {
     name: "Pizza Margherita",
     description: "Knuspriger Boden mit fruchtiger Tomatensoße",
     price: "4,80€",
-    image: "https://source.unsplash.com/400x300/?pizza",
+    image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400&h=300&fit=crop",
   },
   {
     name: "Falafel Wrap",
     description: "Orientalischer Wrap mit frischem Salat",
     price: "4,20€",
-    image: "https://source.unsplash.com/400x300/?falafel",
+    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop",
   },
   {
     name: "Chili sin Carne",
     description: "Pikant, sättigend und rein pflanzlich",
     price: "4,00€",
-    image: "https://source.unsplash.com/400x300/?chili",
+    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=300&fit=crop",
   },
   {
     name: "Reis mit Gemüse",
     description: "Leichtes Gericht im Asia-Stil",
     price: "3,90€",
-    image: "https://source.unsplash.com/400x300/?rice-vegetables",
+    image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=300&fit=crop",
   },
 ];
 
@@ -85,10 +87,22 @@ type Meal = {
   image: string;
 };
 
-const MenuOverview: React.FC = () => {
+interface MenuOverviewProps {
+  isDarkMode: boolean;
+  toggleDarkMode: () => void;
+}
+
+const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode }) => {
   const weekdays = getWeekdays();
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
   const [dailyMeals, setDailyMeals] = useState<Record<number, Meal[]>>({});
+  const [buttonStates, setButtonStates] = useState<Record<string, 'idle' | 'loading' | 'success'>>({});
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+
+  // Apply theme to document when isDarkMode changes
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
 
   useEffect(() => {
     const shuffled = [...allMeals].sort(() => 0.5 - Math.random());
@@ -99,52 +113,122 @@ const MenuOverview: React.FC = () => {
     setDailyMeals(mealsPerDay);
   }, []);
 
-  const handleAddToCart = (meal: Meal) => {
+  const handleImageError = (mealName: string) => {
+    setImageErrors(prev => ({ ...prev, [mealName]: true }));
+  };
+
+  const handleAddToCart = async (meal: Meal) => {
+    const buttonId = `${meal.name}-${selectedDayIndex}`;
+    
+    // Set loading state
+    setButtonStates(prev => ({ ...prev, [buttonId]: 'loading' }));
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Set success state
+    setButtonStates(prev => ({ ...prev, [buttonId]: 'success' }));
+    
+    // Reset to idle after 2 seconds
+    setTimeout(() => {
+      setButtonStates(prev => ({ ...prev, [buttonId]: 'idle' }));
+    }, 2000);
+    
     console.log("In den Warenkorb:", meal);
-    // Hier kann Warenkorb-Logik ergänzt werden
+  };
+
+  const getButtonContent = (meal: Meal) => {
+    const buttonId = `${meal.name}-${selectedDayIndex}`;
+    const state = buttonStates[buttonId] || 'idle';
+    
+    switch (state) {
+      case 'loading':
+        return (
+          <>
+            <span>Wird hinzugefügt...</span>
+          </>
+        );
+      case 'success':
+        return (
+          <>
+            <Check size={16} />
+            <span>Hinzugefügt!</span>
+          </>
+        );
+      default:
+        return (
+          <>
+            <ShoppingCart size={16} />
+            <span>In den Warenkorb</span>
+          </>
+        );
+    }
   };
 
   return (
-    <div className="menu-overview">
-      <div className="weekday-circles">
-        {weekdays.map((date, index) => (
-          <div
-            key={index}
-            className={`weekday-circle ${
-              selectedDayIndex === index ? "active" : ""
-            }`}
-            onClick={() => setSelectedDayIndex(index)}
-          >
-            <div className="weekday">{shortWeekdays[date.getDay()]}</div>
-            <div className="date">{date.toLocaleDateString("de-DE")}</div>
-          </div>
-        ))}
-      </div>
-      <div className="day-section">
-        <h2 className="day-heading">
-          {shortWeekdays[weekdays[selectedDayIndex].getDay()]} –{" "}
-          {weekdays[selectedDayIndex].toLocaleDateString("de-DE")}
-        </h2>
-        <div className="meal-grid">
-          {(dailyMeals[selectedDayIndex] || []).map((meal, i) => (
-            <div key={i} className="meal-card">
-              <img src={meal.image} alt={meal.name} className="meal-image" />
-              <div className="meal-content">
-                <h3>{meal.name}</h3>
-                <p>{meal.description}</p>
-                <p className="meal-price">{meal.price}</p>
-                <button
-                  className="add-to-cart-btn"
-                  onClick={() => handleAddToCart(meal)}
-                >
-                  In den Warenkorb
-                </button>
-              </div>
+    <>
+      <div className="menu-overview" data-theme={isDarkMode ? 'dark' : 'light'}>
+        <div className="weekday-circles">
+          {weekdays.map((date, index) => (
+            <div
+              key={index}
+              className={`weekday-circle ${
+                selectedDayIndex === index ? "active" : ""
+              }`}
+              onClick={() => setSelectedDayIndex(index)}
+            >
+              <div className="weekday">{shortWeekdays[date.getDay()]}</div>
+              <div className="date">{date.toLocaleDateString("de-DE")}</div>
             </div>
           ))}
         </div>
+        <div className="day-section">
+          <h2 className="day-heading">
+            {shortWeekdays[weekdays[selectedDayIndex].getDay()]} –{" "}
+            {weekdays[selectedDayIndex].toLocaleDateString("de-DE")}
+          </h2>
+          <div className="meal-grid">
+            {(dailyMeals[selectedDayIndex] || []).map((meal, i) => {
+              const buttonId = `${meal.name}-${selectedDayIndex}`;
+              const buttonState = buttonStates[buttonId] || 'idle';
+              const hasImageError = imageErrors[meal.name];
+              
+              return (
+                <div key={i} className="meal-card">
+                  {hasImageError ? (
+                    <div className="meal-image-placeholder">
+                      <Image size={48} />
+                      <span>{meal.name}</span>
+                    </div>
+                  ) : (
+                    <img 
+                      src={meal.image} 
+                      alt={meal.name} 
+                      className="meal-image"
+                      onError={() => handleImageError(meal.name)}
+                      loading="lazy"
+                    />
+                  )}
+                  <div className="meal-content">
+                    <h3>{meal.name}</h3>
+                    <p>{meal.description}</p>
+                    <p className="meal-price">{meal.price}</p>
+                    <button
+                      className={`add-to-cart-btn ${buttonState}`}
+                      onClick={() => handleAddToCart(meal)}
+                      disabled={buttonState === 'loading'}
+                    >
+                      {getButtonContent(meal)}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
-    </div>
+      <Footer isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+    </>
   );
 };
 
