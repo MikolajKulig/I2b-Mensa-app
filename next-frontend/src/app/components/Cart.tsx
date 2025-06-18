@@ -5,7 +5,7 @@ import "./cart.css";
 
 export interface CartItem {
   name: string;
-  price: string;
+  price: string | number;
   quantity: number;
 }
 
@@ -26,8 +26,24 @@ const Cart: React.FC<CartProps> = ({
 }) => {
   const router = useRouter();
 
+  const parsePrice = (price: string | number): number => {
+    if (typeof price === 'number') {
+      return price;
+    }
+    // Handle string prices like "4.50 CHF" or "4,50€"
+    const cleanPrice = price.replace(/[^\d.,]/g, '').replace(',', '.');
+    return parseFloat(cleanPrice) || 0;
+  };
+
+  const formatPrice = (price: string | number): string => {
+    if (typeof price === 'number') {
+      return `${price.toFixed(2)} CHF`;
+    }
+    return price;
+  };
+
   const total = items.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace("CHF", "").trim());
+    const price = parsePrice(item.price);
     return sum + price * item.quantity;
   }, 0);
 
@@ -61,7 +77,7 @@ const Cart: React.FC<CartProps> = ({
                 <div key={item.name} className="cart-item">
                   <div className="item-info">
                     <h3>{item.name}</h3>
-                    <p className="item-price">{item.price}</p>
+                    <p className="item-price">{formatPrice(item.price)}</p>
                   </div>
                   <div className="item-actions">
                     <div className="quantity-controls">

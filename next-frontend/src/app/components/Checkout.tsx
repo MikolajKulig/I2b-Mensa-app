@@ -23,8 +23,24 @@ const Checkout: React.FC<CheckoutProps> = ({ items, onBack, onComplete }) => {
   const [discountError, setDiscountError] = useState("");
   const [orderComplete, setOrderComplete] = useState(false);
 
+  const parsePrice = (price: string | number): number => {
+    if (typeof price === 'number') {
+      return price;
+    }
+    // Handle string prices like "4.50 CHF" or "4,50€"
+    const cleanPrice = price.replace(/[^\d.,]/g, '').replace(',', '.');
+    return parseFloat(cleanPrice) || 0;
+  };
+
+  const formatPrice = (price: string | number): string => {
+    if (typeof price === 'number') {
+      return `${price.toFixed(2)} CHF`;
+    }
+    return price;
+  };
+
   const subtotal = items.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace("CHF", "").trim());
+    const price = parsePrice(item.price);
     return sum + price * item.quantity;
   }, 0);
 
@@ -108,11 +124,7 @@ const Checkout: React.FC<CheckoutProps> = ({ items, onBack, onComplete }) => {
                 <span className="item-quantity">×{item.quantity}</span>
               </div>
               <span className="item-price">
-                {(
-                  parseFloat(item.price.replace("CHF", "").trim()) *
-                  item.quantity
-                ).toFixed(2)}{" "}
-                CHF
+                {(parsePrice(item.price) * item.quantity).toFixed(2)} CHF
               </span>
             </div>
           ))}
