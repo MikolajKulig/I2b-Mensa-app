@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./components/Header";
 import MenuOverview from "./components/MenuOverview";
 import Login from "./components/Login";
@@ -8,6 +8,24 @@ import Register from "./components/Register";
 export default function HomePage() {
   const [page, setPage] = useState<"menu" | "login" | "register">("menu");
   const [userName, setUserName] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedTheme = localStorage.getItem('theme');
+    
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === 'dark');
+    } else {
+      setIsDarkMode(prefersDarkMode);
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    localStorage.setItem('theme', newMode ? 'dark' : 'light');
+  };
 
   const handleLogout = () => {
     setUserName(null);
@@ -28,7 +46,7 @@ export default function HomePage() {
             onLogout={handleLogout}
             onLoginClick={() => setPage("login")}
           />
-          <MenuOverview />
+          <MenuOverview isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
         </>
       )}
       {page === "login" && (
