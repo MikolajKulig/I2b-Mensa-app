@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Check, Image } from "lucide-react";
 import Footer from "./Footer";
-import Cart, { CartItem } from "./Cart";
+import Cart from "./Cart";
+import { useCart } from "../context/CartContext";
 import "./MenuOverview.css";
 
 const allMeals = [
@@ -114,8 +115,8 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({
     Record<string, "idle" | "loading" | "success">
   >({});
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const { items, addItem, updateQuantity, removeItem } = useCart();
 
   // Apply theme to document when isDarkMode changes
   useEffect(() => {
@@ -145,17 +146,7 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({
     setButtonStates((prev) => ({ ...prev, [buttonId]: "loading" }));
 
     // Add item to cart
-    setCartItems((prev) => {
-      const existingItem = prev.find((item) => item.name === meal.name);
-      if (existingItem) {
-        return prev.map((item) =>
-          item.name === meal.name
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prev, { name: meal.name, price: meal.price, quantity: 1 }];
-    });
+    addItem({ name: meal.name, price: meal.price, quantity: 1 });
 
     // Set success state
     setButtonStates((prev) => ({ ...prev, [buttonId]: "success" }));
@@ -164,22 +155,6 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({
     setTimeout(() => {
       setButtonStates((prev) => ({ ...prev, [buttonId]: "idle" }));
     }, 2000);
-  };
-
-  const handleUpdateQuantity = (name: string, newQuantity: number) => {
-    if (newQuantity === 0) {
-      handleRemoveItem(name);
-      return;
-    }
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.name === name ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const handleRemoveItem = (name: string) => {
-    setCartItems((prev) => prev.filter((item) => item.name !== name));
   };
 
   const getButtonContent = (meal: Meal) => {
@@ -215,9 +190,9 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({
       <div className="menu-overview" data-theme={isDarkMode ? "dark" : "light"}>
         <div className="cart-button" onClick={() => setIsCartOpen(true)}>
           <ShoppingCart size={24} />
-          {cartItems.length > 0 && (
+          {items.length > 0 && (
             <span className="cart-count">
-              {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+              {items.reduce((sum, item) => sum + item.quantity, 0)}
             </span>
           )}
         </div>
@@ -281,11 +256,11 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({
         </div>
       </div>
       <Cart
-        items={cartItems}
+        items={items}
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveItem}
+        onUpdateQuantity={updateQuantity}
+        onRemoveItem={removeItem}
       />
       <Footer isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
     </>

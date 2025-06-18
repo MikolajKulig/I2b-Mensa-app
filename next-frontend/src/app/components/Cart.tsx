@@ -1,5 +1,6 @@
 import React from "react";
 import { X, Trash2, ShoppingBag } from "lucide-react";
+import { useRouter } from "next/navigation";
 import "./cart.css";
 
 export interface CartItem {
@@ -23,6 +24,8 @@ const Cart: React.FC<CartProps> = ({
   onUpdateQuantity,
   onRemoveItem,
 }) => {
+  const router = useRouter();
+
   const total = items.reduce((sum, item) => {
     const price = parseFloat(item.price.replace("CHF", "").trim());
     return sum + price * item.quantity;
@@ -98,7 +101,15 @@ const Cart: React.FC<CartProps> = ({
               <span>Gesamtsumme</span>
               <span>{total.toFixed(2)} CHF</span>
             </div>
-            <button className="checkout-button">Zur Kasse</button>
+            <button
+              className="checkout-button"
+              onClick={() => {
+                onClose(); // Schließe den Warenkorb
+                router.push("/checkout"); // Navigiere zur Checkout-Seite
+              }}
+            >
+              Zur Kasse
+            </button>
           </div>
         )}
       </div>
