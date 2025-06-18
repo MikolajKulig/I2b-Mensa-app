@@ -1,68 +1,79 @@
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Check, Image } from "lucide-react";
 import Footer from "./Footer";
+import Cart, { CartItem } from "./Cart";
 import "./MenuOverview.css";
 
 const allMeals = [
   {
     name: "Spaghetti Bolognese",
     description: "Klassische Pasta mit würziger Fleischsoße",
-    price: "4,50€",
-    image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=300&fit=crop",
+    price: "14.50 CHF",
+    image:
+      "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=300&fit=crop",
   },
   {
     name: "Gemüse-Curry",
     description: "Herzhaftes Curry mit exotischem Aroma",
-    price: "4,00€",
-    image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&h=300&fit=crop",
+    price: "13.00 CHF",
+    image:
+      "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&h=300&fit=crop",
   },
   {
     name: "Käsespätzle",
     description: "Deftige Spätzle mit geschmolzenem Käse",
-    price: "3,80€",
-    image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400&h=300&fit=crop",
+    price: "12.80 CHF",
+    image:
+      "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400&h=300&fit=crop",
   },
   {
     name: "Hähnchenbrust",
     description: "Zartes Hähnchen, leicht gewürzt",
-    price: "5,20€",
-    image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400&h=300&fit=crop",
+    price: "16.20 CHF",
+    image:
+      "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400&h=300&fit=crop",
   },
   {
     name: "Schnitzel mit Pommes",
     description: "Knuspriges Schnitzel mit goldenen Pommes",
-    price: "5,00€",
-    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop",
+    price: "15.00 CHF",
+    image:
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop",
   },
   {
     name: "Linsensuppe",
     description: "Hausgemachte Suppe mit kräftigem Geschmack",
-    price: "3,50€",
-    image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop",
+    price: "9.50 CHF",
+    image:
+      "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop",
   },
   {
     name: "Pizza Margherita",
     description: "Knuspriger Boden mit fruchtiger Tomatensoße",
-    price: "4,80€",
-    image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400&h=300&fit=crop",
+    price: "13.80 CHF",
+    image:
+      "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400&h=300&fit=crop",
   },
   {
     name: "Falafel Wrap",
     description: "Orientalischer Wrap mit frischem Salat",
-    price: "4,20€",
-    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop",
+    price: "12.20 CHF",
+    image:
+      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop",
   },
   {
     name: "Chili sin Carne",
     description: "Pikant, sättigend und rein pflanzlich",
-    price: "4,00€",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=300&fit=crop",
+    price: "13.00 CHF",
+    image:
+      "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=300&fit=crop",
   },
   {
     name: "Reis mit Gemüse",
     description: "Leichtes Gericht im Asia-Stil",
-    price: "3,90€",
-    image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=300&fit=crop",
+    price: "11.90 CHF",
+    image:
+      "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=300&fit=crop",
   },
 ];
 
@@ -92,16 +103,26 @@ interface MenuOverviewProps {
   toggleDarkMode: () => void;
 }
 
-const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode }) => {
+const MenuOverview: React.FC<MenuOverviewProps> = ({
+  isDarkMode,
+  toggleDarkMode,
+}) => {
   const weekdays = getWeekdays();
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
   const [dailyMeals, setDailyMeals] = useState<Record<number, Meal[]>>({});
-  const [buttonStates, setButtonStates] = useState<Record<string, 'idle' | 'loading' | 'success'>>({});
+  const [buttonStates, setButtonStates] = useState<
+    Record<string, "idle" | "loading" | "success">
+  >({});
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   // Apply theme to document when isDarkMode changes
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+    document.documentElement.setAttribute(
+      "data-theme",
+      isDarkMode ? "dark" : "light"
+    );
   }, [isDarkMode]);
 
   useEffect(() => {
@@ -114,41 +135,65 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode 
   }, []);
 
   const handleImageError = (mealName: string) => {
-    setImageErrors(prev => ({ ...prev, [mealName]: true }));
+    setImageErrors((prev) => ({ ...prev, [mealName]: true }));
   };
 
   const handleAddToCart = async (meal: Meal) => {
     const buttonId = `${meal.name}-${selectedDayIndex}`;
-    
+
     // Set loading state
-    setButtonStates(prev => ({ ...prev, [buttonId]: 'loading' }));
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    setButtonStates((prev) => ({ ...prev, [buttonId]: "loading" }));
+
+    // Add item to cart
+    setCartItems((prev) => {
+      const existingItem = prev.find((item) => item.name === meal.name);
+      if (existingItem) {
+        return prev.map((item) =>
+          item.name === meal.name
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prev, { name: meal.name, price: meal.price, quantity: 1 }];
+    });
+
     // Set success state
-    setButtonStates(prev => ({ ...prev, [buttonId]: 'success' }));
-    
+    setButtonStates((prev) => ({ ...prev, [buttonId]: "success" }));
+
     // Reset to idle after 2 seconds
     setTimeout(() => {
-      setButtonStates(prev => ({ ...prev, [buttonId]: 'idle' }));
+      setButtonStates((prev) => ({ ...prev, [buttonId]: "idle" }));
     }, 2000);
-    
-    console.log("In den Warenkorb:", meal);
+  };
+
+  const handleUpdateQuantity = (name: string, newQuantity: number) => {
+    if (newQuantity === 0) {
+      handleRemoveItem(name);
+      return;
+    }
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.name === name ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const handleRemoveItem = (name: string) => {
+    setCartItems((prev) => prev.filter((item) => item.name !== name));
   };
 
   const getButtonContent = (meal: Meal) => {
     const buttonId = `${meal.name}-${selectedDayIndex}`;
-    const state = buttonStates[buttonId] || 'idle';
-    
+    const state = buttonStates[buttonId] || "idle";
+
     switch (state) {
-      case 'loading':
+      case "loading":
         return (
           <>
             <span>Wird hinzugefügt...</span>
           </>
         );
-      case 'success':
+      case "success":
         return (
           <>
             <Check size={16} />
@@ -167,7 +212,15 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode 
 
   return (
     <>
-      <div className="menu-overview" data-theme={isDarkMode ? 'dark' : 'light'}>
+      <div className="menu-overview" data-theme={isDarkMode ? "dark" : "light"}>
+        <div className="cart-button" onClick={() => setIsCartOpen(true)}>
+          <ShoppingCart size={24} />
+          {cartItems.length > 0 && (
+            <span className="cart-count">
+              {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+            </span>
+          )}
+        </div>
         <div className="weekday-circles">
           {weekdays.map((date, index) => (
             <div
@@ -190,9 +243,9 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode 
           <div className="meal-grid">
             {(dailyMeals[selectedDayIndex] || []).map((meal, i) => {
               const buttonId = `${meal.name}-${selectedDayIndex}`;
-              const buttonState = buttonStates[buttonId] || 'idle';
+              const buttonState = buttonStates[buttonId] || "idle";
               const hasImageError = imageErrors[meal.name];
-              
+
               return (
                 <div key={i} className="meal-card">
                   {hasImageError ? (
@@ -201,9 +254,9 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode 
                       <span>{meal.name}</span>
                     </div>
                   ) : (
-                    <img 
-                      src={meal.image} 
-                      alt={meal.name} 
+                    <img
+                      src={meal.image}
+                      alt={meal.name}
                       className="meal-image"
                       onError={() => handleImageError(meal.name)}
                       loading="lazy"
@@ -216,7 +269,7 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode 
                     <button
                       className={`add-to-cart-btn ${buttonState}`}
                       onClick={() => handleAddToCart(meal)}
-                      disabled={buttonState === 'loading'}
+                      disabled={buttonState === "loading"}
                     >
                       {getButtonContent(meal)}
                     </button>
@@ -227,6 +280,13 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode 
           </div>
         </div>
       </div>
+      <Cart
+        items={cartItems}
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        onUpdateQuantity={handleUpdateQuantity}
+        onRemoveItem={handleRemoveItem}
+      />
       <Footer isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
     </>
   );
