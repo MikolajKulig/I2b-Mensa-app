@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Check, Image } from "lucide-react";
 import Footer from "./Footer";
+import Cart from "./Cart";
+import { useCart } from "../context/CartContext";
 import "./MenuOverview.css";
 
 const getWeekdays = () => {
@@ -32,16 +34,26 @@ interface MenuOverviewProps {
   toggleDarkMode: () => void;
 }
 
-const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode }) => {
+const MenuOverview: React.FC<MenuOverviewProps> = ({
+  isDarkMode,
+  toggleDarkMode,
+}) => {
   const weekdays = getWeekdays();
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
   const [allMeals, setAllMeals] = useState<Meal[]>([]);
   const [dailyMeals, setDailyMeals] = useState<Record<number, Meal[]>>({});
-  const [buttonStates, setButtonStates] = useState<Record<string, 'idle' | 'loading' | 'success'>>({});
+  const [buttonStates, setButtonStates] = useState<
+    Record<string, "idle" | "loading" | "success">
+  >({});
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { items, addItem, updateQuantity, removeItem } = useCart();
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+    document.documentElement.setAttribute(
+      "data-theme",
+      isDarkMode ? "dark" : "light"
+    );
   }, [isDarkMode]);
 
   useEffect(() => {
@@ -63,28 +75,40 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode 
   }, []);
 
   const handleImageError = (mealName: string) => {
-    setImageErrors(prev => ({ ...prev, [mealName]: true }));
+    setImageErrors((prev) => ({ ...prev, [mealName]: true }));
   };
 
   const handleAddToCart = async (meal: Meal) => {
     const buttonId = `${meal.name}-${selectedDayIndex}`;
+
+    // Set loading state
+    setButtonStates((prev) => ({ ...prev, [buttonId]: "loading" }));
+
+    // Add item to cart
+    addItem({ name: meal.name, price: meal.price, quantity: 1 });
+
+    // Set success state
+    setButtonStates((prev) => ({ ...prev, [buttonId]: "success" }));
+
+    // Reset to idle after 2 seconds
     setButtonStates(prev => ({ ...prev, [buttonId]: 'loading' }));
     await new Promise(resolve => setTimeout(resolve, 1000));
     setButtonStates(prev => ({ ...prev, [buttonId]: 'success' }));
-    setTimeout(() => {
-      setButtonStates(prev => ({ ...prev, [buttonId]: 'idle' }));
-    }, 2000);
     console.log("In den Warenkorb:", meal);
   };
 
   const getButtonContent = (meal: Meal) => {
     const buttonId = `${meal.name}-${selectedDayIndex}`;
-    const state = buttonStates[buttonId] || 'idle';
+    const state = buttonStates[buttonId] || "idle";
 
     switch (state) {
-      case 'loading':
-        return <span>Wird hinzugefügt...</span>;
-      case 'success':
+      case "loading":
+        return (
+          <>
+            <span>Wird hinzugefügt...</span>
+          </>
+        );
+      case "success":
         return (
           <>
             <Check size={16} />
@@ -103,7 +127,15 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode 
 
   return (
     <>
-      <div className="menu-overview" data-theme={isDarkMode ? 'dark' : 'light'}>
+      <div className="menu-overview" data-theme={isDarkMode ? "dark" : "light"}>
+        <div className="cart-button" onClick={() => setIsCartOpen(true)}>
+          <ShoppingCart size={24} />
+          {items.length > 0 && (
+            <span className="cart-count">
+              {items.reduce((sum, item) => sum + item.quantity, 0)}
+            </span>
+          )}
+        </div>
         <div className="weekday-circles">
           {weekdays.map((date, index) => (
             <div
@@ -126,8 +158,9 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode 
           <div className="meal-grid">
             {(dailyMeals[selectedDayIndex] || []).map((meal, i) => {
               const buttonId = `${meal.name}-${selectedDayIndex}`;
-              const buttonState = buttonStates[buttonId] || 'idle';
+              const buttonState = buttonStates[buttonId] || "idle";
               const hasImageError = imageErrors[meal.name];
+
               const displayPrice = typeof meal.price === "number" ? `${meal.price.toFixed(2)}.-` : meal.price;
 
               return (
@@ -139,7 +172,7 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode 
                     </div>
                   ) : (
                     <img
-                      src={meal.image ?? ""}
+                      src={meal.image}
                       alt={meal.name}
                       className="meal-image"
                       onError={() => handleImageError(meal.name)}
@@ -160,7 +193,7 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode 
                     <button
                       className={`add-to-cart-btn ${buttonState}`}
                       onClick={() => handleAddToCart(meal)}
-                      disabled={buttonState === 'loading'}
+                      disabled={buttonState === "loading"}
                     >
                       {getButtonContent(meal)}
                     </button>
@@ -171,6 +204,13 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({ isDarkMode, toggleDarkMode 
           </div>
         </div>
       </div>
+      <Cart
+        items={items}
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        onUpdateQuantity={updateQuantity}
+        onRemoveItem={removeItem}
+      />
       <Footer isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
     </>
   );

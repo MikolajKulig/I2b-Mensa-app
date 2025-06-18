@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { User, ShoppingCart } from "lucide-react";
+import { User } from "lucide-react";
 import "./header.css";
 
 interface HeaderProps {
@@ -21,9 +21,6 @@ const Header: React.FC<HeaderProps> = ({
     <header className="header">
       <div className="logo">MensaBZZ</div>
       <div className="header-right">
-        <div className="cart-icon" title="Warenkorb">
-          <ShoppingCart size={20} color="white" />
-        </div>
         <div className="avatar-wrapper">
           <div className="avatar" onClick={toggleMenu}>
             <User size={20} color="white" />

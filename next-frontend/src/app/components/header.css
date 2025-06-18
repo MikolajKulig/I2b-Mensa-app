@@ -36,31 +36,6 @@ body {
   position: relative;
 }
 
-.cart-icon {
-  background-color: var(--primary-color);
-  border-radius: 50%;
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  box-shadow: var(--shadow-sm);
-}
-
-.cart-icon svg {
-  color: white;
-  width: 22px;
-  height: 22px;
-}
-
-.cart-icon:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
-  background-color: var(--primary-color-dark);
-}
-
 .avatar-wrapper {
   position: relative;
 }
