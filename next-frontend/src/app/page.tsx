@@ -32,6 +32,7 @@ export default function HomePage() {
     setPage("menu");
   };
 
+  //handleloginsuccess var
   const handleLoginSuccess = (name = "Max Mustermann") => {
     setUserName(name);
     setPage("menu");
