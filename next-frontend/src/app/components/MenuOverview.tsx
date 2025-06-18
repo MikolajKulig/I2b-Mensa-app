@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ShoppingCart, Check, Image } from "lucide-react";
+import { ShoppingCart, Check, Image, Filter } from "lucide-react";
 import Footer from "./Footer";
 import Cart from "./Cart";
 import { useCart } from "../context/CartContext";
@@ -47,6 +47,8 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({
   >({});
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [selectedDietaryFilter, setSelectedDietaryFilter] = useState<string>("alle");
+  const [showFilterMenu, setShowFilterMenu] = useState<boolean>(false);
   const { items, addItem, updateQuantity, removeItem } = useCart();
 
   useEffect(() => {
@@ -73,6 +75,74 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({
         console.error("Fehler beim Laden der Speisekarte:", error);
       });
   }, []);
+
+  const getDietaryPreferences = (meal: Meal): string[] => {
+    const preferences: string[] = [];
+    
+    // Basierend auf Allergenen und Namen
+    if (meal.allergen) {
+      const allergens = meal.allergen.toLowerCase();
+      
+      // Vegan (keine tierischen Produkte)
+      if (!allergens.includes('milch') && !allergens.includes('eier') && 
+          !meal.name.toLowerCase().includes('fleisch') && 
+          !meal.name.toLowerCase().includes('hähnchen') && 
+          !meal.name.toLowerCase().includes('schnitzel') &&
+          !meal.name.toLowerCase().includes('bolognese')) {
+        preferences.push('vegan');
+      }
+      
+      // Vegetarisch (kein Fleisch)
+      if (!meal.name.toLowerCase().includes('fleisch') && 
+          !meal.name.toLowerCase().includes('hähnchen') && 
+          !meal.name.toLowerCase().includes('schnitzel') &&
+          !meal.name.toLowerCase().includes('bolognese')) {
+        preferences.push('vegetarisch');
+      }
+      
+      // Glutenfrei
+      if (!allergens.includes('gluten')) {
+        preferences.push('glutenfrei');
+      }
+    } else {
+      // Wenn keine Allergene angegeben sind, basierend auf Namen
+      const name = meal.name.toLowerCase();
+      if (!name.includes('fleisch') && !name.includes('hähnchen') && 
+          !name.includes('schnitzel') && !name.includes('bolognese')) {
+        preferences.push('vegetarisch');
+        if (!name.includes('käse') && !name.includes('milch')) {
+          preferences.push('vegan');
+        }
+      }
+    }
+    
+    // Fleisch-Gerichte
+    if (meal.name.toLowerCase().includes('fleisch') || 
+        meal.name.toLowerCase().includes('hähnchen') || 
+        meal.name.toLowerCase().includes('schnitzel') ||
+        meal.name.toLowerCase().includes('bolognese')) {
+      preferences.push('fleisch');
+    }
+    
+    return preferences.length > 0 ? preferences : ['fleisch']; // Default
+  };
+
+  const getDietaryBadge = (preferences: string[]): string => {
+    if (preferences.includes('vegan')) return '🌱 Vegan';
+    if (preferences.includes('vegetarisch')) return '🥬 Vegetarisch';
+    if (preferences.includes('glutenfrei')) return '🌾 Glutenfrei';
+    return '🍖 Fleisch';
+  };
+
+  const filterMeals = (meals: Meal[]) => {
+    if (selectedDietaryFilter === "alle") {
+      return meals;
+    }
+    return meals.filter(meal => {
+      const preferences = getDietaryPreferences(meal);
+      return preferences.includes(selectedDietaryFilter);
+    });
+  };
 
   const handleImageError = (mealName: string) => {
     setImageErrors((prev) => ({ ...prev, [mealName]: true }));
@@ -125,6 +195,14 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({
     }
   };
 
+  const dietaryOptions = [
+    { value: "alle", label: "Alle Gerichte" },
+    { value: "vegetarisch", label: "🥬 Vegetarisch" },
+    { value: "vegan", label: "🌱 Vegan" },
+    { value: "glutenfrei", label: "🌾 Glutenfrei" },
+    { value: "fleisch", label: "🍖 Mit Fleisch" },
+  ];
+
   return (
     <>
       <div className="menu-overview" data-theme={isDarkMode ? "dark" : "light"}>
@@ -149,6 +227,47 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({
           ))}
         </div>
 
+        <div className="filter-section">
+          <div className="filter-container">
+            <button 
+              className="filter-button"
+              onClick={() => setShowFilterMenu(!showFilterMenu)}
+            >
+              <Filter size={16} />
+              <span>Ernährungspräferenzen</span>
+            </button>
+            
+            {showFilterMenu && (
+              <div className="filter-dropdown">
+                {dietaryOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    className={`filter-option ${selectedDietaryFilter === option.value ? 'active' : ''}`}
+                    onClick={() => {
+                      setSelectedDietaryFilter(option.value);
+                      setShowFilterMenu(false);
+                    }}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          {selectedDietaryFilter !== "alle" && (
+            <div className="active-filter">
+              <span>Aktiver Filter: {dietaryOptions.find(opt => opt.value === selectedDietaryFilter)?.label}</span>
+              <button 
+                className="clear-filter"
+                onClick={() => setSelectedDietaryFilter("alle")}
+              >
+                ✕
+              </button>
+            </div>
+          )}
+        </div>
+
         <div className="day-section">
           <h2 className="day-heading">
             {shortWeekdays[weekdays[selectedDayIndex].getDay()]} –{" "}
@@ -156,10 +275,11 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({
           </h2>
 
           <div className="meal-grid">
-            {(dailyMeals[selectedDayIndex] || []).map((meal, i) => {
+            {filterMeals(dailyMeals[selectedDayIndex] || []).map((meal, i) => {
               const buttonId = `${meal.name}-${selectedDayIndex}`;
               const buttonState = buttonStates[buttonId] || "idle";
               const hasImageError = imageErrors[meal.name];
+              const dietaryPreferences = getDietaryPreferences(meal);
 
               const displayPrice = typeof meal.price === "number" ? `${meal.price.toFixed(2)}.-` : meal.price;
 
@@ -181,7 +301,12 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({
                   )}
 
                   <div className="meal-content">
-                    <h3>{meal.name}</h3>
+                    <div className="meal-header">
+                      <h3>{meal.name}</h3>
+                      <span className="dietary-badge">
+                        {getDietaryBadge(dietaryPreferences)}
+                      </span>
+                    </div>
                     <p>{meal.description}</p>
                     <p className="meal-price">{displayPrice}</p>
                     {meal.calories != null && (
@@ -202,6 +327,18 @@ const MenuOverview: React.FC<MenuOverviewProps> = ({
               );
             })}
           </div>
+          
+          {filterMeals(dailyMeals[selectedDayIndex] || []).length === 0 && (
+            <div className="no-meals-message">
+              <p>Keine Gerichte für diese Ernährungspräferenz verfügbar.</p>
+              <button 
+                className="clear-filter-btn"
+                onClick={() => setSelectedDietaryFilter("alle")}
+              >
+                Alle Gerichte anzeigen
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <Cart
