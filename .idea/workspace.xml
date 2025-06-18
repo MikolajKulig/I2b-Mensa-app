@@ -5,9 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2b789f42-c493-401f-a215-13c31c48c89a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/next-frontend/public/testdata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next-frontend/src/app/components/MenuOverview.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/next-frontend/src/app/components/MenuOverview.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/mensa/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mensa/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/mensa/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mensa/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/mensa/target/classes/com/mensa/filter/AuthFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mensa/target/classes/com/mensa/filter/AuthFilter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/mensa/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mensa/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/mensa/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mensa/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/next-frontend/src/app/components/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/next-frontend/src/app/components/Login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/next-frontend/src/app/components/Register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/next-frontend/src/app/components/Register.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,18 +32,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Node.js.index.jsx.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\harig\\WebstormProjects\\I2b-Mensa-app\\next-frontend\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.1.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
 }</component>
   <component name="RunManager">
@@ -75,11 +78,7 @@
       <option name="presentableId" value="Default" />
       <updated>1747826116484</updated>
       <workItem from="1747826117694" duration="909000" />
-      <workItem from="1748456943489" duration="10000" />
-      <workItem from="1748934281912" duration="1393000" />
-      <workItem from="1749035589634" duration="3429000" />
-      <workItem from="1749725934523" duration="1892000" />
-      <workItem from="1750231209297" duration="8926000" />
+      <workItem from="1750249834445" duration="554000" />
     </task>
     <servers />
   </component>

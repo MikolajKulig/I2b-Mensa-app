@@ -19,11 +19,12 @@ const Login: React.FC<LoginProps> = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (!email || !password) {
       setError("Bitte E-Mail und Passwort eingeben.");
       return;
@@ -32,9 +33,38 @@ const Login: React.FC<LoginProps> = ({
       setError("Bitte eine gültige E-Mail-Adresse eingeben.");
       return;
     }
+
+    setIsLoading(true);
     setError("");
-    if (onSuccessLogin) {
-      onSuccessLogin();
+
+    try {
+      const response = await fetch('http://localhost:8000/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          username: email,
+          password: password
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.text();
+        console.log('Login successful:', result);
+        if (onSuccessLogin) {
+          onSuccessLogin();
+        }
+      } else {
+        const errorText = await response.text();
+        setError(errorText || 'Login fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten.');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Verbindungsfehler. Bitte überprüfen Sie Ihre Internetverbindung.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -79,6 +109,7 @@ const Login: React.FC<LoginProps> = ({
                 value={email}
                 className="input"
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div className="input-wrapper">
@@ -91,6 +122,7 @@ const Login: React.FC<LoginProps> = ({
                 value={password}
                 className="input"
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div className="error-forgot-wrapper">
@@ -98,8 +130,12 @@ const Login: React.FC<LoginProps> = ({
               <button className="forgot-btn">Passwort vergessen?</button>
             </div>
           </div>
-          <button onClick={handleSignIn} className="submit-btn">
-            Los geht's
+          <button 
+            onClick={handleSignIn} 
+            className={`submit-btn ${isLoading ? 'loading' : ''}`}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Wird angemeldet...' : 'Los geht\'s'}
           </button>
           <p className="register-link">
             Noch kein Konto?{" "}
